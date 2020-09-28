@@ -34,7 +34,7 @@
 ![gitlab](https://joshdanielwalker.github.io/Tech-SVG-Icons/gitlab.svg)
 
 ## Web Server
-![apache](https://joshdanielwalker.github.io/Tech-SVG-Icons/arduino.svg)
+![apache](https://joshdanielwalker.github.io/Tech-SVG-Icons/apache.svg)
 ![nginx](https://joshdanielwalker.github.io/Tech-SVG-Icons/nginx.svg)
 ![nodejs](https://joshdanielwalker.github.io/Tech-SVG-Icons/nodejs.svg)
 
@@ -125,7 +125,7 @@
 ![codepen](https://joshdanielwalker.github.io/Tech-SVG-Icons/codepen.svg)
 
 ## Electronics
-![arduino](https://joshdanielwalker.github.io/Tech-SVG-Icons/apache.svg)
+![arduino](https://joshdanielwalker.github.io/Tech-SVG-Icons/arduino.svg)
 ![raspberry pi](https://joshdanielwalker.github.io/Tech-SVG-Icons/raspberry-pi.svg)
 
 ## Text Editor
