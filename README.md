@@ -19,6 +19,8 @@
 
 ## DNS
 ![cloudflare](https://joshdanielwalker.github.io/Tech-SVG-Icons/cloudflare.svg)
+
+## CDN
 ![maxcdn](https://joshdanielwalker.github.io/Tech-SVG-Icons/maxcdn.svg)
 
 ## Static Hosting
