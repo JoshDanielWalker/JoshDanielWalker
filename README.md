@@ -89,9 +89,6 @@
 
 ![electron](https://joshdanielwalker.github.io/Tech-SVG-Icons/electron.svg)
 
-## JavaScript
-![atlassian](https://joshdanielwalker.github.io/Tech-SVG-Icons/atlassian.svg)
-
 ## Compiler
 ![babel](https://joshdanielwalker.github.io/Tech-SVG-Icons/babel.svg)
 ![webpack](https://joshdanielwalker.github.io/Tech-SVG-Icons/webpack.svg)
