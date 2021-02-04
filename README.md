@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-![Metrics](https://metrics.lecoq.io/JoshDanielWalker?template=classic&followup=1&isocalendar=1&languages=1&isocalendar.duration=half-year&config.timezone=Europe%2FLondon)
+#![Metrics](https://metrics.lecoq.io/JoshDanielWalker?template=classic&followup=1&isocalendar=1&languages=1&isocalendar.duration=half-year&config.timezone=Europe%2FLondon)
 
 # Technology
 
