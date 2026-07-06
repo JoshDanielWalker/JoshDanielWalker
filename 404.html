@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Nothing design language fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Doto:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Prevent FOUC for theme (matches store default) -->
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.classList.add(theme);
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.content = theme === 'dark' ? '#000000' : '#ffffff';
+        } catch (e) {}
+      })();
+    </script>
+    <style>html,body{background:var(--bg, #000)}</style>
+
+    <link href="/_app/immutable/entry/start.CCDf9ccz.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/t9vVxF9T.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/CTdMBTWg.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/mSVpa7-T.js" rel="modulepreload">
+		<link href="/_app/immutable/entry/app.DeSfPHxl.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/DFGXtf6T.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/CXg9mFPB.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/vFlmhx3n.js" rel="modulepreload">
+		<link href="/_app/immutable/nodes/0.CTLupaD3.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/bG5NtT6X.js" rel="modulepreload">
+		
+		<link href="/_app/immutable/assets/0.BhWM6O_c.css" rel="stylesheet">
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display:contents">
+			<script>
+				{
+					__sveltekit_1af2662 = {
+						base: ""
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/_app/immutable/entry/start.CCDf9ccz.js"),
+						import("/_app/immutable/entry/app.DeSfPHxl.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+  </body>
+</html>

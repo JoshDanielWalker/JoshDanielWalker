@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joshua Daniel Walker — CV</title>
+  <!-- html2pdf.js for client-side PDF download (lightweight, no server needed) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap');
+
+    :root {
+      /* Light mode (default for CV - clean, professional, high contrast) */
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --surface-raised: #f1f3f5;
+      --border: #e9ecef;
+      --border-visible: #ced4da;
+      --text-disabled: #adb5bd;
+      --text-secondary: #6c757d;
+      --text-primary: #212529;
+      --text-display: #000000;
+      --utility-orange: #f26522;
+      --accent-red: #d71921;
+    }
+
+    .dark {
+      /* Dark mode - matches main website NULLFRAME aesthetic */
+      --bg: #000000;
+      --surface: #111111;
+      --surface-raised: #1a1a1a;
+      --border: #222222;
+      --border-visible: #333333;
+      --text-disabled: #666666;
+      --text-secondary: #999999;
+      --text-primary: #e8e8e8;
+      --text-display: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .cv {
+      width: 210mm;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 10mm 12mm;
+      background: var(--surface);
+      min-height: 297mm;
+      box-shadow: 0 0 0 1px var(--border);
+      transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+      box-sizing: border-box;
+    }
+
+    /* Print styles - A4 friendly, clean output. Always light for best readability */
+    @media print {
+      @page {
+        size: A4;
+        margin: 10mm;
+      }
+
+      html, body {
+        background: white !important;
+        color: black !important;
+      }
+
+      .cv {
+        width: 190mm;
+        max-width: 190mm;
+        margin: 0 auto;
+        padding: 8mm;
+        background: white !important;
+        box-shadow: none;
+        min-height: auto;
+        color: black !important;
+        box-sizing: border-box;
+        overflow: visible;
+      }
+
+      .section {
+        page-break-inside: avoid;
+        margin-bottom: 8mm;
+      }
+
+      .header {
+        page-break-after: avoid;
+        margin-bottom: 6mm;
+      }
+
+      h2, h3, .name, .role-title {
+        color: black !important;
+      }
+
+      .section-header, .sub-header {
+        color: #d71921 !important; /* keep accent */
+      }
+
+      a {
+        color: #111 !important;
+        text-decoration: underline;
+      }
+
+      .theme-toggle,
+      .cv-action-btn {
+        display: none !important;
+      }
+
+      /* Tighter for multi-page A4 to avoid clipping */
+      p, li {
+        font-size: 9pt !important;
+        line-height: 1.35 !important;
+      }
+    }
+
+    /* Base page-break rules so html2pdf.js respects them during PDF generation.
+       This prevents text from being cut off between pages in the downloaded PDF
+       while leaving the print layout (which was already perfect) untouched. */
+    .section,
+    .role,
+    ul {
+      page-break-inside: avoid;
+      break-inside: avoid; /* modern alias, helps html2canvas-based exporters */
+    }
+
+    .section-header,
+    .header {
+      page-break-after: avoid;
+    }
+
+    /* PDF export only (added during html2pdf capture): force the long
+       Recognition & Endorsements section (7 testimonials) onto page 2.
+       This guarantees the short EDUCATION & CERTIFICATIONS section
+       (and its final lines) fully fits on page 1 with no clipping or
+       partial render from html2canvas/jsPDF pagination math.
+       The browser Print flow (@media print) is unaffected. */
+    .cv.pdf-export .section.recognition {
+      page-break-before: always !important;
+    }
+
+    .header {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-visible);
+    }
+
+    .name {
+      font-size: 22pt;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-display);
+    }
+
+    .title {
+      font-family: 'Space Mono', monospace;
+      font-size: 10pt;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--utility-orange);
+      margin-top: 2px;
+    }
+
+    .contact {
+      font-family: 'Space Mono', monospace;
+      font-size: 8.5pt;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    .section {
+      margin-bottom: 16px;
+    }
+
+    .section-header {
+      font-family: 'Space Mono', monospace;
+      font-size: 9pt;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--utility-orange);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-header::before {
+      content: '//';
+      color: var(--text-secondary);
+      font-size: 9pt;
+    }
+
+    .section-header + .content {
+      margin-top: 4px;
+    }
+
+    h3 {
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: var(--text-display);
+      margin: 10px 0 4px;
+      letter-spacing: -0.005em;
+    }
+
+    p, li {
+      font-size: 9pt;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .summary {
+      font-size: 9pt;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 2.5px;
+    }
+
+    li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--utility-orange);
+      font-family: 'Space Mono', monospace;
+      font-size: 8pt;
+    }
+
+    .sub-header {
+      font-family: 'Space Mono', monospace;
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin: 8px 0 3px;
+      font-weight: 500;
+    }
+
+    .role {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
+    .role-title {
+      font-weight: 600;
+      font-size: 9.5pt;
+      color: var(--text-display);
+    }
+
+    .role-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 8pt;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .company {
+      font-size: 8.5pt;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 16px;
+      font-size: 8.5pt;
+    }
+
+    .skill-category {
+      font-family: 'Space Mono', monospace;
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--utility-orange);
+      margin-bottom: 1px;
+    }
+
+    .quote {
+      font-style: italic;
+      font-size: 8.5pt;
+      color: var(--text-secondary);
+      border-left: 2px solid var(--utility-orange);
+      padding-left: 8px;
+      margin: 4px 0;
+    }
+
+    .quote-attr {
+      font-family: 'Space Mono', monospace;
+      font-size: 7.5pt;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .footer {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-family: 'Space Mono', monospace;
+      font-size: 7pt;
+      color: var(--text-secondary);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    /* Theme toggle - minimal, high quality, matches site aesthetic */
+    .theme-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-raised);
+      color: var(--text-secondary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 160ms ease;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .theme-toggle:hover {
+      border-color: var(--utility-orange);
+      color: var(--utility-orange);
+      transform: scale(1.05);
+    }
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--utility-orange);
+      outline-offset: 2px;
+    }
+    /* Show appropriate icon */
+    .theme-toggle .icon-dark { display: none; }
+    .dark .theme-toggle .icon-dark { display: inline; }
+    .dark .theme-toggle .icon-light { display: none; }
+    .theme-toggle .icon-light { display: inline; }
+
+    /* CV action buttons - print & download. Matches site button aesthetic */
+    .cv-action-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 5px 11px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface-raised);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 160ms ease;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .cv-action-btn:hover {
+      border-color: var(--utility-orange);
+      color: var(--utility-orange);
+      background: var(--surface);
+    }
+    .cv-action-btn:focus-visible {
+      outline: 2px solid var(--utility-orange);
+      outline-offset: 2px;
+    }
+
+    /* Mobile width rule - the main responsive behavior is now handled by the .cv-wrapper + rules above.
+       This is kept as a fallback / for slightly larger tablets. */
+    @media screen and (max-width: 768px) {
+      .cv {
+        max-width: 100%;
+        padding: 10mm;
+      }
+    }
+
+    /* =======================================================
+       Mobile-friendly A4 CV: on phones and small screens the CV now takes
+       nearly the full viewport width. This dramatically improves readability
+       (larger text, less cramped layout) while the print/download version
+       remains a perfect exact A4.
+    ======================================================= */
+    .cv-wrapper {
+      width: 100%;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 8px 4px 16px;   /* reduced side padding on mobile to give the CV more width */
+      box-sizing: border-box;
+    }
+
+    .cv {
+      width: 210mm;
+      min-height: 297mm;
+      /* existing styles above control the rest */
+    }
+
+    /* On screens narrower than A4 width, let the CV expand to almost full mobile width.
+       No aggressive scaling = content is much easier to read.
+       The A4 paper size is still enforced only for actual printing / PDF download. */
+    @media screen and (max-width: 210mm) {
+      .cv-wrapper {
+        padding: 4px 2px 12px;   /* even tighter sides on very small phones */
+        max-width: 100%;
+      }
+
+      .cv {
+        width: 100%;
+        max-width: 100%;
+        min-height: auto;
+        padding: 5mm 4mm;   /* slightly reduced internal padding to maximize usable width */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Wrapper for responsive A4 CV.
+       On mobile the .cv now takes nearly full viewport width (much better readability).
+       Print/download is still perfect exact A4. -->
+  <div class="cv-wrapper">
+    <div class="cv">
+      <!-- Header -->
+      <div class="header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 0;">
+        <div class="name">Joshua Daniel Walker</div>
+        <div class="title">Principal Site Reliability Engineer</div>
+        <div class="contact">
+          London, UK • 07891 065 026 • Josh.Walker@me.com • linkedin.com/in/joshuadanielwalker
+        </div>
+      </div>
+
+      <!-- Action buttons + theme (non-printing, high-quality controls) -->
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+        <button id="print-btn" class="cv-action-btn" aria-label="Print this CV" title="Print CV">
+          Print
+        </button>
+        <button id="download-btn" class="cv-action-btn" aria-label="Download as PDF" title="Download PDF">
+          Download PDF
+        </button>
+        <!-- Theme toggle -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="icon-dark">☾</span>
+          <span class="icon-light">☼</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Professional Summary -->
+    <div class="section">
+      <div class="section-header">PROFESSIONAL SUMMARY</div>
+      <p class="summary">
+        Accomplished Principal Site Reliability Engineer and technical leader with 11+ years of experience building and operating large-scale production distributed systems. The last 5+ years at Jaguar Land Rover focused on leading the Central Platform SRE team and guiding product team engineers across the platform and over 140+ commercial services, as well as business-critical infrastructure spanning bespoke software, integrations, business systems, and manufacturing.
+      </p>
+      <p class="summary" style="margin-top: 4px;">
+        Supported the JLR Cloud Center of Excellence (CoE) across AWS, GCP, and IBM Kubernetes platforms in a multi-cloud, globally scaled environment. Deep expertise in scaling Kubernetes clusters (primarily GKE), control plane reliability, bespoke CRDs, operators, GitOps, service mesh, advanced observability, and platform tooling.
+      </p>
+      <p class="summary" style="margin-top: 4px;">
+        Key initiatives included migrating JLR’s enterprise observability strategy from fragmented tools across departments to a unified strategic observability solution, significantly reducing complexity, improving capabilities, and shortening time to recovery from incidents. Also scaled JLR’s bespoke software platform.
+      </p>
+      <p class="summary" style="margin-top: 4px;">
+        Proven track record owning end-to-end platform initiatives including Over-The-Air (OTA) software update infrastructure for vehicles, enterprise IAM platforms, automated remediation, AI orchestration, FinOps practices, and policy enforcement.
+      </p>
+      <p class="summary" style="margin-top: 4px;">
+        Strong technical leader with experience owning end-to-end platform initiatives. Eager to bring deep platform reliability, enterprise observability, DevOps incident response, SLO strategy and agentic automation expertise to teams building and scaling Kiro and next-generation spec-driven agentic coding platforms — delivering the operational foundations and developer experience that let AI-accelerated engineering workflows run reliably at enterprise scale.
+      </p>
+    </div>
+
+    <!-- Key Achievements -->
+    <div class="section">
+      <div class="section-header">KEY ACHIEVEMENTS</div>
+
+      <div class="sub-header">LEADERSHIP &amp; PLATFORM DELIVERY</div>
+      <ul>
+        <li>Led the Central Platform SRE team and collaborated with product team engineers to support the Kubernetes platform and 140+ commercial services plus business-critical infrastructure across bespoke software, integrations, business systems, and manufacturing.</li>
+      </ul>
+
+      <div class="sub-header">OBSERVABILITY TRANSFORMATION</div>
+      <ul>
+        <li>Migrated JLR’s enterprise observability strategy from numerous disparate tools and systems spread across departments and teams to a unified strategic observability solution. This reduced complexity, enhanced overall capabilities, and significantly improved teams’ ability to reduce Mean Time to Recovery (MTTR) and minimise incident impact.</li>
+      </ul>
+
+      <div class="sub-header">PLATFORM SCALING &amp; RELIABILITY</div>
+      <ul>
+        <li>Scaled JLR’s bespoke Kubernetes software platform to global, multi-cloud, enterprise scale while maintaining performance and reliability across a large portfolio of services and critical systems.</li>
+        <li>Established the patterns, automation and operational standards for running Kubernetes platforms sustainably at enterprise scale across multiple clouds.</li>
+        <li>Supported JLR Cloud CoE across AWS, GCP, and IBM Kubernetes platforms in a multi-cloud, global-scale environment, enabling seamless Over-The-Air (OTA) software updates to vehicles.</li>
+      </ul>
+
+      <div class="sub-header">PLATFORM ENGINEERING &amp; DEVELOPER EXPERIENCE</div>
+      <ul>
+        <li>Created bespoke CRDs using Go, developed Kubernetes Operators, and built developer experience services (CLIs, interfaces, automation).</li>
+        <li>Implemented AI orchestration, automated remediation, full observability pillars, Enterprise FinOps, and policy standards enforcement.</li>
+      </ul>
+
+      <div class="sub-header">ENTERPRISE CONTRIBUTIONS</div>
+      <ul>
+        <li>Supported Enterprise IAM platforms integrated with multi-cloud Kubernetes environments.</li>
+      </ul>
+    </div>
+
+    <!-- Professional Experience -->
+    <div class="section">
+      <div class="section-header">PROFESSIONAL EXPERIENCE</div>
+
+      <div>
+        <div class="role">
+          <span class="role-title">Principal Site Reliability Engineer / Kubernetes Platform Lead</span>
+          <span class="role-date">Sep 2023 – Present</span>
+        </div>
+        <div class="company">Jaguar Land Rover – IDT Engineering, DDC, Manchester (2+ years)</div>
+        <ul>
+          <li>Technical leader for offboard cloud SRE, providing vision, setting objectives, and empowering teams to deliver highly reliable Kubernetes-orchestrated platforms for connected vehicle services.</li>
+          <li>Owned SLO implementation and reliability governance for critical services, including escalation processes, on-call retrospectives, smart alerting, and automatic maintenance suppression, significantly reducing alert fatigue.</li>
+          <li>Championed distributed tracing (Tempo + OpenTelemetry) and advanced observability, enabling deep debugging of complex microservices, dependencies, and performance issues across the stack.</li>
+          <li>Led automation initiatives (service/account token rotation, K6 load testing) and the full Dynatrace rollout with strong stakeholder management.</li>
+          <li>Mentored SRE and cross-functional engineers on Kubernetes best practices, platform architecture, and SRE principles; influenced roadmaps and fostered a culture of continuous improvement and inclusivity.</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <div class="role">
+          <span class="role-title">Senior Site Reliability Engineer</span>
+          <span class="role-date">Mar 2021 – Sep 2023</span>
+        </div>
+        <div class="company">Jaguar Land Rover – DDC, Manchester (2+ years)</div>
+        <ul>
+          <li>Pioneered SRE capabilities and Kubernetes platform practices within the growing DDC team as one of the first senior members.</li>
+          <li>Designed and implemented secure, high-performance GKE architectures, full Infrastructure as Code migration (GitLab → Terraform), and robust networking/service discovery.</li>
+          <li>Developed and rolled out an Internal Developer Platform (Backstage/IDP) to enable seamless cloud deployments for remote and global engineering teams.</li>
+          <li>Introduced GitOps (Argo CD), progressive delivery (blue-green/canary via Argo Rollouts), cluster-wide tracing, and modernised CI/CD pipelines.</li>
+          <li>Provided 24/7 on-call leadership, rapid incident response, root cause analysis, and postmortems for production platforms.</li>
+          <li>Delivered internal presentations (e.g., OpenTelemetry) and drove adoption of new tools and practices across the organisation.</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <div class="role">
+          <span class="role-title">DevOps Engineer</span>
+          <span class="role-date">2018 – 2020</span>
+        </div>
+        <div class="company">Sykes Cottages Holiday Homes (2 years)</div>
+        <ul>
+          <li>Led containerisation of core applications, message consumers, and checkout systems; migrated from AWS EC2 to ECS/Fargate with Terraform IaC.</li>
+          <li>Migrated messaging from RabbitMQ to AWS SQS and modernised CI/CD pipelines (Bamboo → Bitbucket).</li>
+          <li>Implemented AWS Fargate autoscaling and Docker workflows for secrets management and deployments, improving scalability and reducing operational overhead for high-traffic eCommerce platforms.</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <div class="role">
+          <span class="role-title">Developer / Web Developer / Internship Roles</span>
+          <span class="role-date">2015 – 2018</span>
+        </div>
+        <div class="company">Sykes Cottages, Grow &amp; Harvest, Livepoint UK (~3 years)</div>
+        <ul>
+          <li>Built and enhanced full-stack eCommerce systems, booking platforms, custom CMS (Laravel/WordPress), and internal workflow tools using PHP, JavaScript, Node.js, and databases.</li>
+          <li>Conducted A/B experiments, mobile-first optimisation, and database migrations.</li>
+        </ul>
+        <p style="font-size: 8pt; color: var(--text-secondary); margin-top: 4px;">Total Industry Experience: 11+ years in software engineering, DevOps, and platform/SRE roles.</p>
+      </div>
+    </div>
+
+    <!-- Technical Skills -->
+    <div class="section">
+      <div class="section-header">TECHNICAL SKILLS</div>
+
+      <div class="skills-grid">
+        <div>
+          <div class="skill-category">KUBERNETES DEEP EXPERTISE</div>
+          <p>Control plane (apiserver, etcd, controller-manager), kube-scheduler patterns, custom controllers/CRDs (controller-runtime), GitOps, multi-tenant scaling, troubleshooting at scale.</p>
+        </div>
+        <div>
+          <div class="skill-category">LANGUAGES &amp; TOOLS</div>
+          <p>Go, Python, Terraform, Helm, Kustomize, ArgoCD, Istio, Prometheus, OpenTelemetry, Tempo.</p>
+        </div>
+        <div>
+          <div class="skill-category">CLOUD &amp; INFRASTRUCTURE</div>
+          <p>GCP (GKE internals &amp; scaling), AWS (EKS patterns), Infrastructure as Code, Linux systems (observability &amp; tuning).</p>
+        </div>
+        <div>
+          <div class="skill-category">RELIABILITY &amp; DISTRIBUTED SYSTEMS</div>
+          <p>SLOs/SLIs, postmortems, on-call leadership, chaos engineering principles. Large-scale production operations, service mesh, advanced networking, observability-driven development.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education & Certifications -->
+    <div class="section">
+      <div class="section-header">EDUCATION &amp; CERTIFICATIONS</div>
+      <p><strong>BSc Computer Science (2:1)</strong>, University of Chester, 2017</p>
+      <p style="margin-top: 4px;">Dynatrace Certified • PagerDuty Certified • AWS &amp; GCP Management Essentials • AI Spec-Driven Development Certificate &amp; AWS Kiro (AI Spec-Driven Development • Amazon Web Services)</p>
+      <p style="margin-top: 3px; font-size: 8pt; color: var(--text-secondary);">UK Citizen | Full UK Driving Licence (No convictions)</p>
+    </div>
+
+    <!-- Recognition -->
+    <div class="section recognition">
+      <div class="section-header">RECOGNITION &amp; ENDORSEMENTS</div>
+      
+      <div class="quote">“Josh always supports his colleagues… very knowledgeable in the latest cloud technologies… passion for learning and driving the team forward with their roadmap.”</div>
+      <div class="quote-attr">— Aisha G, Principal SRE</div>
+
+      <div class="quote">“Exceptional in his support of improving our capabilities with K6 Load Test… shared his workings… put us at the forefront.”</div>
+      <div class="quote-attr">— Dominic B, Chapter Lead Quality</div>
+
+      <div class="quote">“Josh did a great job bringing tracing to life… knowledge came across well… outline the next steps… diagrams well done.”</div>
+      <div class="quote-attr">— Andrew C, Principal Software Engineer</div>
+
+      <div class="quote">“Josh’s tenacity and diligence is the main reason we implemented tracing… actively seeks feedback… thoughtful contributions.”</div>
+      <div class="quote-attr">— Andreea R, Senior Engineer</div>
+
+      <div class="quote">“Very knowledgeable on Kubernetes… comprehensive planning on GitLab IaC… great mentor.”</div>
+      <div class="quote-attr">— Multiple SRE colleagues (Anthony F, Johnnie K, Matthew T, Salik B)</div>
+
+      <div class="quote">“First member of the DDC SRE team… remarkable drive and determination… ability to plan and execute complex tasks.”</div>
+      <div class="quote-attr">— Oliver H, Chapter Lead SRE</div>
+    </div>
+
+    <div class="footer">
+      REFERENCES AVAILABLE UPON REQUEST
+    </div>
+  </div>
+  </div> <!-- /.cv-wrapper -->
+
+  <script>
+    (function() {
+      const html = document.documentElement;
+      const toggle = document.getElementById('theme-toggle');
+      const printBtn = document.getElementById('print-btn');
+      const downloadBtn = document.getElementById('download-btn');
+
+      function getSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      function applyTheme(theme) {
+        html.classList.remove('dark', 'light');
+        html.classList.add(theme);
+        try { localStorage.setItem('cv-theme', theme); } catch(e) {}
+      }
+
+      function initTheme() {
+        const stored = localStorage.getItem('cv-theme');
+        const theme = stored || getSystemTheme();
+        applyTheme(theme);
+      }
+
+      // Early init to avoid FOUC
+      initTheme();
+
+      // Theme toggle
+      if (toggle) {
+        toggle.addEventListener('click', function() {
+          const isDark = html.classList.contains('dark');
+          const next = isDark ? 'light' : 'dark';
+          applyTheme(next);
+        });
+      }
+
+      // Helper to ensure light mode + hide UI buttons for print/PDF output
+      function prepareForExport() {
+        const wasDark = html.classList.contains('dark');
+        if (wasDark) html.classList.remove('dark');
+
+        // Hide all UI controls (print, download, theme) so they don't appear in output
+        const controls = document.querySelectorAll('.cv-action-btn, .theme-toggle');
+        controls.forEach(el => {
+          el.dataset.wasHidden = el.style.display || '';
+          el.style.display = 'none';
+        });
+
+        return { wasDark, controls };
+      }
+
+      function restoreAfterExport(state) {
+        if (state.wasDark) html.classList.add('dark');
+        state.controls.forEach(el => {
+          el.style.display = el.dataset.wasHidden || '';
+          delete el.dataset.wasHidden;
+        });
+      }
+
+      // Print button - always forces light mode + clean output via @media print
+      if (printBtn) {
+        printBtn.addEventListener('click', function() {
+          const state = prepareForExport();
+
+          // Force A4 print-friendly size to prevent clipping (overrides screen styles)
+          const element = document.querySelector('.cv');
+          const originalStyles = {
+            width: element.style.width,
+            padding: element.style.padding,
+            boxSizing: element.style.boxSizing,
+            maxWidth: element.style.maxWidth,
+            minHeight: element.style.minHeight
+          };
+          element.style.width = '190mm';
+          element.style.maxWidth = '190mm';
+          element.style.padding = '8mm';
+          element.style.boxSizing = 'border-box';
+          element.style.minHeight = 'auto';
+
+          // Small delay to let styles apply before print dialog
+          setTimeout(() => {
+            window.print();
+            // Restore after print dialog is dismissed (or queued)
+            setTimeout(() => {
+              Object.keys(originalStyles).forEach(key => {
+                if (originalStyles[key]) element.style[key] = originalStyles[key];
+                else element.style.removeProperty(key.toLowerCase());
+              });
+              restoreAfterExport(state);
+            }, 300);
+          }, 50);
+        });
+      }
+
+      // Download PDF button - forces light mode, hides buttons, then generates clean PDF
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', function() {
+          const element = document.querySelector('.cv');
+          if (!element || typeof html2pdf === 'undefined') {
+            // Fallback
+            const state = prepareForExport();
+            setTimeout(() => {
+              window.print();
+              setTimeout(() => restoreAfterExport(state), 300);
+            }, 50);
+            return;
+          }
+
+          const state = prepareForExport();
+
+          // Force exact A4 content size for clean, non-clipping PDF (210mm - margins)
+          const originalStyles = {
+            width: element.style.width,
+            padding: element.style.padding,
+            boxSizing: element.style.boxSizing,
+            maxWidth: element.style.maxWidth,
+            minHeight: element.style.minHeight
+          };
+          element.style.width = '190mm';
+          element.style.maxWidth = '190mm';
+          element.style.padding = '8mm';
+          element.style.boxSizing = 'border-box';
+          element.style.minHeight = 'auto';
+
+          /* Mark for PDF-specific rules (e.g. clean page break before Recognition)
+             so EDUCATION & CERTIFICATIONS cannot be cut off at the bottom of page 1. */
+          element.classList.add('pdf-export');
+
+          const opt = {
+            margin:       [10, 10, 10, 10],  // top, right, bottom, left in mm (consistent with print)
+            filename:     'Joshua_Daniel_Walker_CV.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            // Use CSS page-break rules (we inject .pdf-export + page-break-before on .recognition
+            // to guarantee EDUCATION & CERTIFICATIONS never clips). 'css' mode respects our
+            // explicit breaks + the general .section { page-break-inside: avoid } rules.
+            pagebreak:    { mode: 'css' }
+          };
+
+          html2pdf().set(opt).from(element).save().then(() => {
+            // Restore styles + PDF export class
+            element.classList.remove('pdf-export');
+            Object.keys(originalStyles).forEach(key => {
+              if (originalStyles[key]) element.style[key] = originalStyles[key];
+              else element.style.removeProperty(key.toLowerCase());
+            });
+            restoreAfterExport(state);
+          }).catch(() => {
+            // Restore and fallback
+            element.classList.remove('pdf-export');
+            Object.keys(originalStyles).forEach(key => {
+              if (originalStyles[key]) element.style[key] = originalStyles[key];
+              else element.style.removeProperty(key.toLowerCase());
+            });
+            restoreAfterExport(state);
+            setTimeout(() => window.print(), 100);
+          });
+        });
+      }
+
+      // Listen for system changes (if user has no saved pref)
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      media.addEventListener('change', function(e) {
+        if (!localStorage.getItem('cv-theme')) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
